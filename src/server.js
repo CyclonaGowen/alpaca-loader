@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Alpaca = require("@alpacahq/alpaca-trade-api");
-const { start } = require("repl");
 
 const app = express();
 const PORT = 3000;
@@ -28,7 +27,7 @@ app.get("/api/stocks/:ticker", async (req, res) => {
 
     const results = [];
 
-    console.log(`${ticker} bars returned: ${results.length}`);
+
 
     for await (const bar of bars) {
       results.push({
@@ -40,6 +39,7 @@ app.get("/api/stocks/:ticker", async (req, res) => {
         volume: bar.Volume,
       });
     }
+      console.log(`${ticker} bars returned: ${results.length}`);
 
     res.json({
       ticker,
@@ -47,6 +47,30 @@ app.get("/api/stocks/:ticker", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+app.post("/api/orders", express.json(), async (req, res) => {
+  try {
+    const { ticker, qty, side } = req.body;
+
+    const order = await alpaca.createOrder({
+      symbol: ticker,
+      qty: Number(qty),
+      side,
+      type: "market",
+      time_in_force: "day",
+    });
+
+    res.json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
       error: error.message,
     });
   }

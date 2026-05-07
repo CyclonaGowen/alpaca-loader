@@ -97,10 +97,9 @@
         </section>
       </main>
     </div>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-
-    <script>
+<script>
   const chart = LightweightCharts.createChart(document.getElementById("chart"), {
     height: 300,
     layout: {
@@ -164,13 +163,35 @@
     return 100 - 100 / (1 + rs);
   }
 
-  function placePaperOrder(side) {
-  const qty = document.getElementById("orderQty").value;
-  const ticker = currentTicker;
+  async function placePaperOrder(side) {
+    const qty = document.getElementById("orderQty").value;
+    const ticker = currentTicker;
 
-  document.getElementById("orderStatus").textContent =
-    `${side.toUpperCase()} order ready: ${qty} share(s) of ${ticker}`;
-}
+    document.getElementById("orderStatus").textContent =
+      `Sending ${side.toUpperCase()} order...`;
+
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ticker,
+        qty,
+        side,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById("orderStatus").textContent =
+        `${side.toUpperCase()} order submitted for ${qty} share(s) of ${ticker}`;
+    } else {
+      document.getElementById("orderStatus").textContent =
+        `Order failed: ${result.error}`;
+    }
+  }
 
   async function loadStock() {
     console.log("Loading stock data...", new Date().toLocaleTimeString());
@@ -242,7 +263,8 @@
       }
     }
 
-    const latestSMA = smaData.length > 0 ? smaData[smaData.length - 1].value : null;
+    const latestSMA =
+      smaData.length > 0 ? smaData[smaData.length - 1].value : null;
 
     let signal = "Watch";
     let reason = "Waiting for stronger confirmation";
@@ -294,5 +316,6 @@
     loadStock();
   }, 15000);
 </script>
+  
   </body>
 </html>
