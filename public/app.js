@@ -92,6 +92,28 @@
     }
   }
 
+  async function loadAccount() {
+  const response = await fetch("/api/account");
+  const result = await response.json();
+
+  if (!result.success) {
+    console.error("Account error:", result.error);
+    return;
+  }
+
+  const account = result.account;
+
+  document.getElementById("buyingPower").textContent = formatMoney(
+    account.buying_power,
+  );
+
+  document.getElementById("portfolioValue").textContent = formatMoney(
+    account.portfolio_value,
+  );
+
+  document.getElementById("cashValue").textContent = formatMoney(account.cash);
+}
+
   async function loadStock() {
     console.log("Loading stock data...", new Date().toLocaleTimeString());
 
@@ -210,6 +232,7 @@
   }
 
   loadStock();
+  loadAccount();
 
   setInterval(() => {
     loadStock();

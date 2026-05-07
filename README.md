@@ -92,3 +92,6 @@ http://localhost:3000
 ## Development Notes
 
 This project began as a small Node.js command-line application for loading stock data from Alpaca and evolved into a browser-based trading dashboard.
+
+Refactored frontend JavaScript out of index.html into public/app.js.
+This makes the project easier to maintain.

@@ -76,6 +76,22 @@ app.post("/api/orders", express.json(), async (req, res) => {
   }
 });
 
+app.get("/api/account", async (req, res) => {
+  try {
+    const account = await alpaca.getAccount();
+
+    res.json({
+      success: true,
+      account,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`App running at http://localhost:${PORT}`);
 });
