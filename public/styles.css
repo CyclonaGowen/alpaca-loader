@@ -177,6 +177,32 @@ th {
 #signalReason {
   color: #9ca3af;
 }
+
+.order-card {
+  margin-top: 18px;
+  background: #0d1828;
+  border: 1px solid #243246;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.order-card input {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.order-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.order-buttons button {
+  flex: 1;
+}
+
+#orderStatus {
+  color: #9ca3af;
+}
   
 
 

@@ -64,7 +64,19 @@
             <h2 id="priceTitle">--</h2>
             <p id="stockStatus">Enter a ticker to load data</p>
             <p id="lastUpdated">Last updated: --</p>
-          </div>
+        </div>
+            <div class="order-card">
+            <h3>Paper Trade</h3>
+
+            <input id="orderQty" type="number" min="1" value="1" />
+
+            <div class="order-buttons">
+                <button onclick="placePaperOrder('buy')">Buy</button>
+                <button onclick="placePaperOrder('sell')">Sell</button>
+        </div>
+
+  <p id="orderStatus">No order placed yet</p>
+</div>          
         </section>
 
         <section class="data-card">
@@ -151,6 +163,14 @@
     const rs = avgGain / avgLoss;
     return 100 - 100 / (1 + rs);
   }
+
+  function placePaperOrder(side) {
+  const qty = document.getElementById("orderQty").value;
+  const ticker = currentTicker;
+
+  document.getElementById("orderStatus").textContent =
+    `${side.toUpperCase()} order ready: ${qty} share(s) of ${ticker}`;
+}
 
   async function loadStock() {
     console.log("Loading stock data...", new Date().toLocaleTimeString());
