@@ -113,6 +113,38 @@
 
   document.getElementById("cashValue").textContent = formatMoney(account.cash);
 }
+async function loadOpenOrders() {
+  const response = await fetch("/api/orders");
+  const result = await response.json();
+
+  const ordersList = document.getElementById("ordersList");
+
+  if (!result.success) {
+    ordersList.textContent = `Error: ${result.error}`;
+    return;
+  }
+
+  if (result.orders.length === 0) {
+    ordersList.textContent = "No open orders";
+    return;
+  }
+
+  ordersList.innerHTML = "";
+
+  result.orders.forEach((order) => {
+    ordersList.innerHTML += `
+      <div>
+        <strong>${order.symbol}</strong><br>
+        Side: ${order.side}<br>
+        Qty: ${order.qty}<br>
+        Type: ${order.type}<br>
+        Status: ${order.status}
+      </div>
+      <hr>
+    `;
+  });
+}
+
 
   async function loadStock() {
     console.log("Loading stock data...", new Date().toLocaleTimeString());
@@ -232,6 +264,7 @@
   }
 
   loadStock();
+  loadOpenOrders();
   loadAccount();
 
   setInterval(() => {

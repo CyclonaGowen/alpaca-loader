@@ -203,7 +203,21 @@ th {
 #orderStatus {
   color: #9ca3af;
 }
-  
+
+.orders-card {
+  margin-top: 18px;
+  background: #0d1828;
+  border: 1px solid #243246;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+#ordersList {
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+
 
 
 

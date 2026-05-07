@@ -92,6 +92,26 @@ app.get("/api/account", async (req, res) => {
   }
 });
 
+app.get("/api/orders", async (req, res) => {
+  try {
+    const orders = await alpaca.getOrders({
+      status: "open",
+      limit: 20,
+      direction: "desc",
+    });
+
+    res.json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`App running at http://localhost:${PORT}`);
 });
