@@ -62,3 +62,50 @@ node src/index.js NVDA
 
 Web application:
 http://localhost:3000
+
+Recent Progress Update
+
+The application has evolved from a simple command-line stock loader into a browser-based stock dashboard.
+
+New Features Added:
+- Express web server
+- Frontend dashboard UI
+- Real candlestick stock chart using TradingView Lightweight Charts
+- Dynamic stock search
+- Sidebar watchlist with quick-load buttons
+- Formatted currency and volume display
+- Daily price change percentage
+- Localhost web application running on port 3000
+
+Current Project Structure:
+
+alpaca-loader/
+├── public/
+│   ├── index.html
+│   └── styles.css
+├── src/
+│   ├── index.js
+│   └── server.js
+├── .env
+├── .gitignore
+├── notes.txt
+├── package.json
+└── README.md
+
+Current Capabilities:
+- Pull live stock data from Alpaca
+- Display candlestick charts
+- Display recent stock candles in a table
+- Quickly switch between stocks
+- Serve frontend and backend together
+
+Future Goals:
+- Technical indicators (RSI, MACD, SMA)
+- Live streaming updates
+- Alerts system
+- Persistent watchlists
+- News integration
+- AI-based signal analysis
+- User accounts
+- Database storage
+- Mobile responsive design

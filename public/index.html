@@ -94,6 +94,11 @@
 
   const candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries);
 
+  const smaSeries = chart.addLineSeries({
+  color: "#22c55e",
+  lineWidth: 2,
+});
+
    function formatMoney(value) {
 
     return `$${Number(value).toFixed(2)}`;
@@ -133,7 +138,25 @@
       close: row.close,
     }));
 
+    const smaData = [];
+
+for (let i = 19; i < result.data.length; i++) {
+  let total = 0;
+
+  for (let j = i - 19; j <= i; j++) {
+    total += result.data[j].close;
+  }
+
+  const sma = total / 20;
+
+  smaData.push({
+    time: result.data[i].date.split("T")[0],
+    value: sma,
+  });
+}
+
     candleSeries.setData(chartData);
+    smaSeries.setData(smaData);
     chart.timeScale().fitContent();
 
     const table = document.getElementById("stockTable");
