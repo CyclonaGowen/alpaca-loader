@@ -78,6 +78,24 @@
 
   const candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries);
 
+   function formatMoney(value) {
+
+    return `$${Number(value).toFixed(2)}`;
+
+  }
+
+  function formatVolume(value) {
+
+    return Number(value).toLocaleString();
+
+  }
+
+  function formatDate(dateString) {
+
+    return dateString.split("T")[0];
+
+  }
+
   async function loadStock() {
     const ticker = document.getElementById("tickerInput").value || "AAPL";
 
@@ -102,18 +120,23 @@
 
     const latest = result.data[result.data.length - 1];
 
-    document.getElementById("priceTitle").textContent = `$${latest.close}`;
-    document.getElementById("stockStatus").textContent = `${result.ticker} latest close price`;
+   const previous = result.data[result.data.length - 2];
+const change = latest.close - previous.close;
+const changePercent = (change / previous.close) * 100;
+
+document.getElementById("priceTitle").textContent = formatMoney(latest.close);
+document.getElementById("stockStatus").textContent =
+  `${change >= 0 ? "+" : ""}${formatMoney(change)} (${changePercent.toFixed(2)}%) today`;
 
     result.data.slice(-5).forEach(row => {
       table.innerHTML += `
         <tr>
-          <td>${row.date.split("T")[0]}</td>
-          <td>${row.open}</td>
-          <td>${row.high}</td>
-          <td>${row.low}</td>
-          <td>${row.close}</td>
-          <td>${row.volume}</td>
+            <td>${formatDate(row.date)}</td>
+            <td>${formatMoney(row.open)}</td>
+            <td>${formatMoney(row.high)}</td>
+            <td>${formatMoney(row.low)}</td>
+            <td>${formatMoney(row.close)}</td>
+            <td>${formatVolume(row.volume)}</td>
         </tr>
       `;
     });
