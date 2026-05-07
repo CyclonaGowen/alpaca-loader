@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/CyclonaGowen/alpaca-loader/issues"
   },
-  "homepage": "https://github.com/CyclonaGowen/alpaca-loader#readme"
+  "homepage": "https://github.com/CyclonaGowen/alpaca-loader#readme",
+  "dependencies": {
+    "@alpacahq/alpaca-trade-api": "^3.1.3",
+    "dotenv": "^17.4.2"
+  }
 }
