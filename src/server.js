@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const Alpaca = require("@alpacahq/alpaca-trade-api");
+const { start } = require("repl");
 
 const app = express();
 const PORT = 3000;
@@ -21,10 +22,13 @@ app.get("/api/stocks/:ticker", async (req, res) => {
 
     const bars = alpaca.getBarsV2(ticker, {
       timeframe: "1Day",
+      start: "2026-01-01",
       limit: 60,
     });
 
     const results = [];
+
+    console.log(`${ticker} bars returned: ${results.length}`);
 
     for await (const bar of bars) {
       results.push({

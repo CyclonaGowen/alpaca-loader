@@ -85,6 +85,24 @@ button {
   padding: 20px;
 }
 
+.indicator-card {
+  margin-top: 18px;
+  background: #0d1828;
+  border: 1px solid #243246;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+#rsiValue {
+  font-size: 34px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#rsiStatus {
+  color: #9ca3af;
+}
+
 #chart {
   height: 300px;
   width: 100%
