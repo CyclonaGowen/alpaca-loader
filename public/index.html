@@ -1,27 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alpaca Stock Loader</title>
+  <title>Alpaca Loader</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Alpaca Stock Loader</h1>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>📈 Alpaca Loader</h2>
 
-  <input id="tickerInput" placeholder="Enter ticker, example AAPL" />
-  <button onclick="loadStock()">Load Stock Data</button>
+      <nav>
+        <p class="active">Dashboard</p>
+        <p>Watchlist</p>
+        <p>Alerts</p>
+        <p>News</p>
+        <p>Settings</p>
+      </nav>
 
-  <pre id="output"></pre>
+      <div class="paper-box">
+        <strong>Paper Trading</strong>
+        <p>Buying Power</p>
+        <h3>$100,000.00</h3>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header>
+        <input id="tickerInput" placeholder="Search ticker, ex: AAPL">
+        <button onclick="loadStock()">Load Data</button>
+      </header>
+
+      <section class="top-row">
+        <div class="chart-card">
+          <h1 id="tickerTitle">AAPL</h1>
+          <div class="fake-chart">Stock Chart Area</div>
+        </div>
+
+        <div class="info-card">
+          <h2 id="priceTitle">--</h2>
+          <p id="stockStatus">Enter a ticker to load data</p>
+        </div>
+      </section>
+
+      <section class="data-card">
+        <h3>Recent Data</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Open</th>
+              <th>High</th>
+              <th>Low</th>
+              <th>Close</th>
+              <th>Volume</th>
+            </tr>
+          </thead>
+          <tbody id="stockTable"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
 
   <script>
     async function loadStock() {
       const ticker = document.getElementById("tickerInput").value || "AAPL";
-      const output = document.getElementById("output");
-
-      output.textContent = "Loading...";
 
       const response = await fetch(`/api/stocks/${ticker}`);
-      const data = await response.json();
+      const result = await response.json();
 
-      output.textContent = JSON.stringify(data, null, 2);
+      document.getElementById("tickerTitle").textContent = result.ticker;
+
+      const table = document.getElementById("stockTable");
+      table.innerHTML = "";
+
+      const latest = result.data[result.data.length - 1];
+
+      document.getElementById("priceTitle").textContent = latest.close;
+      document.getElementById("stockStatus").textContent = `${result.ticker} latest close price`;
+
+      result.data.forEach(row => {
+        table.innerHTML += `
+          <tr>
+            <td>${row.date}</td>
+            <td>${row.open}</td>
+            <td>${row.high}</td>
+            <td>${row.low}</td>
+            <td>${row.close}</td>
+            <td>${row.volume}</td>
+          </tr>
+        `;
+      });
     }
   </script>
 </body>
