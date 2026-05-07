@@ -54,6 +54,12 @@
             <div id="rsiValue">--</div>
             <p id="rsiStatus">Load a stock to calculate RSI</p>
           </div>
+
+          <div class="signal-card">
+            <h3>Market Signal</h3>
+            <div id="signalValue">--</div>
+            <p id="signalReason">Load stock data to generate signal</p>
+        </div>
           <div class="info-card">
             <h2 id="priceTitle">--</h2>
             <p id="stockStatus">Enter a ticker to load data</p>
@@ -83,177 +89,190 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 
     <script>
-      const chart = LightweightCharts.createChart(
-        document.getElementById("chart"),
-        {
-          height: 300,
-          layout: {
-            background: { color: "#0d1828" },
-            textColor: "#d1d5db",
-          },
-          grid: {
-            vertLines: { color: "#1f2937" },
-            horzLines: { color: "#1f2937" },
-          },
-        },
-      );
+  const chart = LightweightCharts.createChart(document.getElementById("chart"), {
+    height: 300,
+    layout: {
+      background: { color: "#0d1828" },
+      textColor: "#d1d5db",
+    },
+    grid: {
+      vertLines: { color: "#1f2937" },
+      horzLines: { color: "#1f2937" },
+    },
+  });
 
-      const candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries);
+  const candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries);
 
-      const smaSeries = chart.addSeries(LightweightCharts.LineSeries, {
-  color: "#22c55e",
-  lineWidth: 2,
-});
+  const smaSeries = chart.addSeries(LightweightCharts.LineSeries, {
+    color: "#22c55e",
+    lineWidth: 2,
+  });
 
-      function formatMoney(value) {
-        return `$${Number(value).toFixed(2)}`;
-      }
+  let currentTicker = "AAPL";
 
-      function formatVolume(value) {
-        return Number(value).toLocaleString();
-      }
-
-      function formatDate(dateString) {
-        return dateString.split("T")[0];
-      }
-
-      function quickLoad(ticker) {
-        document.getElementById("tickerInput").value = ticker;
-        loadStock();
-      }
-
-      function calculateRSI(data, period = 14) {
-  if (data.length <= period) return null;
-
-  let gains = 0;
-  let losses = 0;
-
-  for (let i = 1; i <= period; i++) {
-    const change = data[i].close - data[i - 1].close;
-
-    if (change >= 0) {
-      gains += change;
-    } else {
-      losses += Math.abs(change);
-    }
+  function formatMoney(value) {
+    return `$${Number(value).toFixed(2)}`;
   }
 
-  const avgGain = gains / period;
-  const avgLoss = losses / period;
+  function formatVolume(value) {
+    return Number(value).toLocaleString();
+  }
 
-  if (avgLoss === 0) return 100;
+  function formatDate(dateString) {
+    return dateString.split("T")[0];
+  }
 
-  const rs = avgGain / avgLoss;
-  return 100 - 100 / (1 + rs);
-}
-
-let currentTicker = "AAPL";
-
-function quickLoad(ticker) {
+  function quickLoad(ticker) {
     document.getElementById("tickerInput").value = ticker;
     loadStock();
-}
-
-      async function loadStock() {
-      console.log("Loading stock data...", new Date().toLocaleTimeString());
-        currentTicker =
-        document.getElementById("tickerInput").value || currentTicker;
-
-        const ticker = currentTicker;
-
-        const response = await fetch(`/api/stocks/${ticker}`);
-        const result = await response.json();
-
-        document.getElementById("tickerTitle").textContent = result.ticker;
-
-        const chartData = result.data.map((row) => ({
-          time: row.date.split("T")[0],
-          open: row.open,
-          high: row.high,
-          low: row.low,
-          close: row.close,
-        }));
-
-        const smaData = [];
-
-        for (let i = 19; i < result.data.length; i++) {
-          let total = 0;
-
-          for (let j = i - 19; j <= i; j++) {
-            total += result.data[j].close;
-          }
-
-          const sma = total / 20;
-
-          smaData.push({
-            time: result.data[i].date.split("T")[0],
-            value: sma,
-          });
-        }
-
-        candleSeries.setData(chartData);
-        smaSeries.setData(smaData);
-        chart.timeScale().fitContent();
-
-        const table = document.getElementById("stockTable");
-        table.innerHTML = "";
-
-        const latest = result.data[result.data.length - 1];
-
-const previous = result.data[result.data.length - 2];
-
-let change = 0;
-let changePercent = 0;
-
-if (previous) {
-  change = latest.close - previous.close;
-  changePercent = (change / previous.close) * 100;
-}      
-
-const rsi = calculateRSI(result.data);
-
-if (rsi === null) {
-  document.getElementById("rsiValue").textContent = "--";
-  document.getElementById("rsiStatus").textContent = "Not enough data";
-} else {
-  document.getElementById("rsiValue").textContent = rsi.toFixed(2);
-
-  if (rsi >= 70) {
-    document.getElementById("rsiStatus").textContent = "Overbought area";
-  } else if (rsi <= 30) {
-    document.getElementById("rsiStatus").textContent = "Oversold area";
-  } else {
-    document.getElementById("rsiStatus").textContent = "Neutral range";
   }
-}       
 
-        document.getElementById("priceTitle").textContent = formatMoney(
-          latest.close,
-        );
-        document.getElementById("stockStatus").textContent =
-          `${change >= 0 ? "+" : ""}${formatMoney(change)} (${changePercent.toFixed(2)}%) today`;
-        document.getElementById("lastUpdated").textContent =
-            `Last updated: ${new Date().toLocaleTimeString()}`;
-        result.data.slice(-5).forEach((row) => {
-          table.innerHTML += `
-        <tr>
-            <td>${formatDate(row.date)}</td>
-            <td>${formatMoney(row.open)}</td>
-            <td>${formatMoney(row.high)}</td>
-            <td>${formatMoney(row.low)}</td>
-            <td>${formatMoney(row.close)}</td>
-            <td>${formatVolume(row.volume)}</td>
-        </tr>
-      `;
-        });
+  function calculateRSI(data, period = 14) {
+    if (data.length <= period) return null;
+
+    let gains = 0;
+    let losses = 0;
+
+    for (let i = 1; i <= period; i++) {
+      const change = data[i].close - data[i - 1].close;
+
+      if (change >= 0) {
+        gains += change;
+      } else {
+        losses += Math.abs(change);
+      }
+    }
+
+    const avgGain = gains / period;
+    const avgLoss = losses / period;
+
+    if (avgLoss === 0) return 100;
+
+    const rs = avgGain / avgLoss;
+    return 100 - 100 / (1 + rs);
+  }
+
+  async function loadStock() {
+    console.log("Loading stock data...", new Date().toLocaleTimeString());
+
+    currentTicker = document.getElementById("tickerInput").value || currentTicker;
+
+    const ticker = currentTicker;
+
+    const response = await fetch(`/api/stocks/${ticker}`);
+    const result = await response.json();
+
+    document.getElementById("tickerTitle").textContent = result.ticker;
+
+    const chartData = result.data.map((row) => ({
+      time: row.date.split("T")[0],
+      open: row.open,
+      high: row.high,
+      low: row.low,
+      close: row.close,
+    }));
+
+    const smaData = [];
+
+    for (let i = 19; i < result.data.length; i++) {
+      let total = 0;
+
+      for (let j = i - 19; j <= i; j++) {
+        total += result.data[j].close;
       }
 
-      loadStock();
+      smaData.push({
+        time: result.data[i].date.split("T")[0],
+        value: total / 20,
+      });
+    }
 
-      setInterval(() => {
-        loadStock();
-        }, 15000);
+    candleSeries.setData(chartData);
+    smaSeries.setData(smaData);
+    chart.timeScale().fitContent();
 
-    </script>
+    const table = document.getElementById("stockTable");
+    table.innerHTML = "";
+
+    const latest = result.data[result.data.length - 1];
+    const previous = result.data[result.data.length - 2];
+
+    let change = 0;
+    let changePercent = 0;
+
+    if (previous) {
+      change = latest.close - previous.close;
+      changePercent = (change / previous.close) * 100;
+    }
+
+    const rsi = calculateRSI(result.data);
+
+    if (rsi === null) {
+      document.getElementById("rsiValue").textContent = "--";
+      document.getElementById("rsiStatus").textContent = "Not enough data";
+    } else {
+      document.getElementById("rsiValue").textContent = rsi.toFixed(2);
+
+      if (rsi >= 70) {
+        document.getElementById("rsiStatus").textContent = "Overbought area";
+      } else if (rsi <= 30) {
+        document.getElementById("rsiStatus").textContent = "Oversold area";
+      } else {
+        document.getElementById("rsiStatus").textContent = "Neutral range";
+      }
+    }
+
+    const latestSMA = smaData.length > 0 ? smaData[smaData.length - 1].value : null;
+
+    let signal = "Watch";
+    let reason = "Waiting for stronger confirmation";
+
+    if (rsi !== null && latestSMA !== null) {
+      if (rsi < 30 && latest.close > latestSMA) {
+        signal = "Bullish";
+        reason = "RSI is oversold and price is above SMA 20";
+      } else if (rsi > 70 && latest.close < latestSMA) {
+        signal = "Bearish";
+        reason = "RSI is overbought and price is below SMA 20";
+      } else if (latest.close > latestSMA) {
+        signal = "Watch";
+        reason = "Price is above SMA 20";
+      } else {
+        signal = "Caution";
+        reason = "Price is below SMA 20";
+      }
+    }
+
+    document.getElementById("signalValue").textContent = signal;
+    document.getElementById("signalReason").textContent = reason;
+
+    document.getElementById("priceTitle").textContent = formatMoney(latest.close);
+
+    document.getElementById("stockStatus").textContent =
+      `${change >= 0 ? "+" : ""}${formatMoney(change)} (${changePercent.toFixed(2)}%) today`;
+
+    document.getElementById("lastUpdated").textContent =
+      `Last updated: ${new Date().toLocaleTimeString()}`;
+
+    result.data.slice(-5).forEach((row) => {
+      table.innerHTML += `
+        <tr>
+          <td>${formatDate(row.date)}</td>
+          <td>${formatMoney(row.open)}</td>
+          <td>${formatMoney(row.high)}</td>
+          <td>${formatMoney(row.low)}</td>
+          <td>${formatMoney(row.close)}</td>
+          <td>${formatVolume(row.volume)}</td>
+        </tr>
+      `;
+    });
+  }
+
+  loadStock();
+
+  setInterval(() => {
+    loadStock();
+  }, 15000);
+</script>
   </body>
 </html>

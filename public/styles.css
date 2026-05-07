@@ -159,6 +159,24 @@ th {
 #signalReason {
   color: #9ca3af;
 }
+
+.signal-card {
+  margin-top: 18px;
+  background: #0d1828;
+  border: 1px solid #243246;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+#signalValue {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#signalReason {
+  color: #9ca3af;
+}
   
 
 
