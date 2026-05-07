@@ -33,7 +33,7 @@
       <section class="top-row">
         <div class="chart-card">
           <h1 id="tickerTitle">AAPL</h1>
-          <div class="fake-chart">Stock Chart Area</div>
+          <div id="chart"></div>
         </div>
 
         <div class="info-card">
@@ -61,36 +61,65 @@
     </main>
   </div>
 
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
   <script>
-    async function loadStock() {
-      const ticker = document.getElementById("tickerInput").value || "AAPL";
+  const chart = LightweightCharts.createChart(document.getElementById("chart"), {
+    height: 300,
+    layout: {
+      background: { color: "#0d1828" },
+      textColor: "#d1d5db",
+    },
+    grid: {
+      vertLines: { color: "#1f2937" },
+      horzLines: { color: "#1f2937" },
+    },
+  });
 
-      const response = await fetch(`/api/stocks/${ticker}`);
-      const result = await response.json();
+  const candleSeries = chart.addSeries(LightweightCharts.CandlestickSeries);
 
-      document.getElementById("tickerTitle").textContent = result.ticker;
+  async function loadStock() {
+    const ticker = document.getElementById("tickerInput").value || "AAPL";
 
-      const table = document.getElementById("stockTable");
-      table.innerHTML = "";
+    const response = await fetch(`/api/stocks/${ticker}`);
+    const result = await response.json();
 
-      const latest = result.data[result.data.length - 1];
+    document.getElementById("tickerTitle").textContent = result.ticker;
 
-      document.getElementById("priceTitle").textContent = latest.close;
-      document.getElementById("stockStatus").textContent = `${result.ticker} latest close price`;
+    const chartData = result.data.map(row => ({
+      time: row.date.split("T")[0],
+      open: row.open,
+      high: row.high,
+      low: row.low,
+      close: row.close,
+    }));
 
-      result.data.forEach(row => {
-        table.innerHTML += `
-          <tr>
-            <td>${row.date}</td>
-            <td>${row.open}</td>
-            <td>${row.high}</td>
-            <td>${row.low}</td>
-            <td>${row.close}</td>
-            <td>${row.volume}</td>
-          </tr>
-        `;
-      });
-    }
-  </script>
+    candleSeries.setData(chartData);
+    chart.timeScale().fitContent();
+
+    const table = document.getElementById("stockTable");
+    table.innerHTML = "";
+
+    const latest = result.data[result.data.length - 1];
+
+    document.getElementById("priceTitle").textContent = `$${latest.close}`;
+    document.getElementById("stockStatus").textContent = `${result.ticker} latest close price`;
+
+    result.data.slice(-5).forEach(row => {
+      table.innerHTML += `
+        <tr>
+          <td>${row.date.split("T")[0]}</td>
+          <td>${row.open}</td>
+          <td>${row.high}</td>
+          <td>${row.low}</td>
+          <td>${row.close}</td>
+          <td>${row.volume}</td>
+        </tr>
+      `;
+    });
+  }
+
+  loadStock();
+</script>
 </body>
 </html>

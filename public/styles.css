@@ -85,14 +85,9 @@ button {
   padding: 20px;
 }
 
-.fake-chart {
+#chart {
   height: 300px;
-  border: 1px dashed #334155;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
+  width: 100%
 }
 
 .data-card {

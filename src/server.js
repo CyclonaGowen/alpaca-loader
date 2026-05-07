@@ -21,7 +21,7 @@ app.get("/api/stocks/:ticker", async (req, res) => {
 
     const bars = alpaca.getBarsV2(ticker, {
       timeframe: "1Day",
-      limit: 5,
+      limit: 60,
     });
 
     const results = [];
