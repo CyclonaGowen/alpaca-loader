@@ -17,6 +17,22 @@
         <p>Settings</p>
       </nav>
 
+       <div class="watchlist">
+
+      <h3>Watchlist</h3>
+
+      <button onclick="quickLoad('AAPL')">AAPL</button>
+
+      <button onclick="quickLoad('TSLA')">TSLA</button>
+
+      <button onclick="quickLoad('NVDA')">NVDA</button>
+
+      <button onclick="quickLoad('SPY')">SPY</button>
+
+      <button onclick="quickLoad('AMD')">AMD</button>
+
+    </div>
+
       <div class="paper-box">
         <strong>Paper Trading</strong>
         <p>Buying Power</p>
@@ -95,6 +111,11 @@
     return dateString.split("T")[0];
 
   }
+
+  function quickLoad(ticker) {
+  document.getElementById("tickerInput").value = ticker;
+  loadStock();
+}
 
   async function loadStock() {
     const ticker = document.getElementById("tickerInput").value || "AAPL";

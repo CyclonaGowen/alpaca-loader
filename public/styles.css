@@ -108,3 +108,18 @@ th, td {
 th {
   color: #9ca3af;
 }
+
+.watchlist {
+  margin-top: 40px;
+}
+
+.watchlist h3 {
+  margin-bottom: 12px;
+}
+
+.watchlist button {
+  width: 100%;
+  margin-bottom: 10px;
+  background: #111c2d;
+  border: 1px solid #243246;
+}
