@@ -2,6 +2,8 @@
 
 A Node.js stock dashboard application powered by the Alpaca Trading API.
 
+![Dashboard Screenshot](public/images/dashboard.png)
+
 ## Features
 
 - Live stock market data
