@@ -1,6 +1,11 @@
 require("dotenv").config();
 
+const express = require("express");
+const path = require("path");
 const Alpaca = require("@alpacahq/alpaca-trade-api");
+
+const app = express();
+const PORT = 3000;
 
 const alpaca = new Alpaca({
   keyId: process.env.APCA_API_KEY_ID,
@@ -8,19 +13,21 @@ const alpaca = new Alpaca({
   paper: true,
 });
 
-const ticker = process.argv[2] || "AAPL";
+app.use(express.static(path.join(__dirname, "../public")));
 
-async function loadStockData() {
+app.get("/api/stocks/:ticker", async (req, res) => {
   try {
-    console.log(`Fetching stock data for ${ticker}...\n`);
+    const ticker = req.params.ticker.toUpperCase();
 
     const bars = alpaca.getBarsV2(ticker, {
       timeframe: "1Day",
       limit: 5,
     });
 
+    const results = [];
+
     for await (const bar of bars) {
-      console.log({
+      results.push({
         date: bar.Timestamp,
         open: bar.OpenPrice,
         high: bar.HighPrice,
@@ -29,9 +36,18 @@ async function loadStockData() {
         volume: bar.Volume,
       });
     }
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-}
 
-loadStockData();
+    res.json({
+      ticker,
+      data: results,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`App running at http://localhost:${PORT}`);
+});

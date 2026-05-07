@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alpaca Stock Loader</title>
+</head>
+<body>
+  <h1>Alpaca Stock Loader</h1>
+
+  <input id="tickerInput" placeholder="Enter ticker, example AAPL" />
+  <button onclick="loadStock()">Load Stock Data</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    async function loadStock() {
+      const ticker = document.getElementById("tickerInput").value || "AAPL";
+      const output = document.getElementById("output");
+
+      output.textContent = "Loading...";
+
+      const response = await fetch(`/api/stocks/${ticker}`);
+      const data = await response.json();
+
+      output.textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

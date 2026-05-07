@@ -1,1 +1,35 @@
-https://paper-api.alpaca.markets/v2
+Project Progress Notes
+
+Created a Node.js project called alpaca-loader.
+
+Initialized the project with:
+npm init -y
+
+Set up Git and connected the project to GitHub.
+
+Installed dependencies:
+- @alpacahq/alpaca-trade-api
+- dotenv
+
+Created a .gitignore file to protect:
+- .env
+- node_modules
+- .DS_Store
+
+Created an Alpaca Paper Trading account and generated API keys.
+
+Stored API keys securely in a .env file.
+
+Built the first working stock loader in:
+src/index.js
+
+The application:
+- connects to Alpaca API
+- loads stock candle/bar data
+- accepts a stock ticker from the command line
+- prints stock data to the terminal
+
+Example usage:
+node src/index.js TSLA
+
+Successfully tested loading stock market data from Alpaca.
