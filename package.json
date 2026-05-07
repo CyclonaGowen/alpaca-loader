@@ -9,5 +9,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CyclonaGowen/alpaca-loader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CyclonaGowen/alpaca-loader/issues"
+  },
+  "homepage": "https://github.com/CyclonaGowen/alpaca-loader#readme"
 }
