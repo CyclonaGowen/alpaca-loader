@@ -57,6 +57,7 @@
           <div class="info-card">
             <h2 id="priceTitle">--</h2>
             <p id="stockStatus">Enter a ticker to load data</p>
+            <p id="lastUpdated">Last updated: --</p>
           </div>
         </section>
 
@@ -231,7 +232,8 @@ if (rsi === null) {
         );
         document.getElementById("stockStatus").textContent =
           `${change >= 0 ? "+" : ""}${formatMoney(change)} (${changePercent.toFixed(2)}%) today`;
-
+        document.getElementById("lastUpdated").textContent =
+            `Last updated: ${new Date().toLocaleTimeString()}`;
         result.data.slice(-5).forEach((row) => {
           table.innerHTML += `
         <tr>
