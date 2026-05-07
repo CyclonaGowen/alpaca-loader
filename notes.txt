@@ -33,3 +33,32 @@ Example usage:
 node src/index.js TSLA
 
 Successfully tested loading stock market data from Alpaca.
+
+Current Application Features
+
+The application now includes:
+- Node.js backend
+- Express web server
+- Alpaca Trading API integration
+- Environment variable support using dotenv
+- Web frontend running on localhost:3000
+- Dynamic stock ticker lookup
+- JSON API endpoint for stock data
+- Browser-based stock search
+
+Example tickers for testing:
+- AAPL
+- TSLA
+- NVDA
+- MSFT
+- AMZN
+- META
+- SPY
+- QQQ
+
+Terminal examples:
+node src/index.js TSLA
+node src/index.js NVDA
+
+Web application:
+http://localhost:3000
