@@ -8,18 +8,28 @@ const alpaca = new Alpaca({
   paper: true,
 });
 
+const ticker = process.argv[2] || "AAPL";
+
 async function loadStockData() {
   try {
+    console.log(`Fetching stock data for ${ticker}...\n`);
+
     const bars = alpaca.getBarsV2("AAPL", {
       timeframe: "1Day",
       limit: 5,
     });
-
-    console.log("Loading AAPL stock data...\n");
-
+    
     for await (const bar of bars) {
-      console.log(bar);
+      console.log({
+        date: bar.Timestamp,
+        open: bar.OpenPrice,
+        high: bar.HighPrice,
+        low: bar.LowPrice,
+        close: bar.ClosePrice,
+        volume: bar.Volume,
+      });
     }
+
   } catch (error) {
     console.error("Error:", error.message);
   }
