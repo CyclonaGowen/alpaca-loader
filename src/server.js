@@ -112,6 +112,22 @@ app.get("/api/orders", async (req, res) => {
   }
 });
 
+app.get("/api/positions", async (req, res) => {
+  try {
+    const positions = await alpaca.getPositions();
+
+    res.json({
+      success: true,
+      positions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`App running at http://localhost:${PORT}`);
 });
