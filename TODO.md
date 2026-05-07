@@ -12,6 +12,7 @@
 - Live Alpaca account summary
 - Open orders panel
 - Frontend separated into app.js
+- Portfolio Positions Panel
 
 ---
 
@@ -31,16 +32,15 @@ alpaca-loader/
 ---
 
 ## Next Priority Features
-1. Portfolio Positions Panel
-2. Profit/Loss tracking
-3. Trade History
-4. MACD indicator
-5. Stop loss / Take profit
-6. Mobile responsive design
-7. Websocket live streaming
-8. AI trade scoring
-9. Database integration
-10. Authentication/login system
+1. Profit/Loss tracking
+2. Trade History
+3. MACD indicator
+4 Stop loss / Take profit
+5. Mobile responsive design
+6.  Websocket live streaming
+7. AI trade scoring
+8. Database integration
+9. Authentication/login system
 
 ---
 
