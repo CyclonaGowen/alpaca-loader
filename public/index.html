@@ -146,8 +146,19 @@
   return 100 - 100 / (1 + rs);
 }
 
+let currentTicker = "AAPL";
+
+function quickLoad(ticker) {
+    document.getElementById("tickerInput").value = ticker;
+    loadStock();
+}
+
       async function loadStock() {
-        const ticker = document.getElementById("tickerInput").value || "AAPL";
+        console.log("Loading stock data..."), new Date().toLocaleTimeString();
+        currentTicker =
+        document.getElementById("tickerInput").value || currentTicker;
+
+        const ticker = currentTicker;
 
         const response = await fetch(`/api/stocks/${ticker}`);
         const result = await response.json();
@@ -236,6 +247,11 @@ if (rsi === null) {
       }
 
       loadStock();
+
+      setInterval(() => {
+        loadStock();
+        }, 15000);
+
     </script>
   </body>
 </html>
